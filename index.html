@@ -36,27 +36,7 @@
     line-height: 1.6;
     overflow-x: hidden;
   }
-  /* ── SCROLL ANIMATION (class-based) ── */
-  .scroll-animate {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
-  }
-  .scroll-animate.in-view {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  
-  /* ── HOVER OVERRIDES (beat .in-view specificity via :hover) ── */
-  .card.in-view:hover {
-    transform: translateY(-3px);
-  }
-  .idea-card.in-view:hover {
-    transform: translateY(-3px);
-  }
-  .podium-item.in-view:hover {
-    transform: translateY(-4px);
-  }
+
   /* ── NAV ── */
   nav {
     position: fixed; top: 0; left: 0; right: 0;
@@ -265,33 +245,20 @@
   .results-placeholder h3 { color: var(--white); font-size: 20px; margin-bottom: 8px; }
   .results-placeholder p { color: var(--text); font-size: 14px; }
 
-  .podium { display: flex; gap: 20px; justify-content: center; align-items: flex-end; flex-wrap: wrap; margin-top: 32px; }
+  .podium { display: flex; gap: 20px; justify-content: center; align-items: center; flex-wrap: wrap; margin-top: 32px; }
   .podium-item {
     background: var(--card); border: 1px solid var(--card-border);
     border-radius: var(--radius); padding: 24px 32px;
-    text-align: center; min-width: 180px; transition: 0.25s;
-  }
-  .podium-item:hover { transform: translateY(-4px); }
-  .podium-item.third {
-    order: 1;           /* far left */
+    text-align: center; min-width: 180px;
     position: relative;
-    top: 10px;          /* 10px below */
   }
-  .podium-item.first {
-    order: 2;           /* middle */
-    position: relative;
-    top: -10px;         /* 10px above */
-  }
-  .podium-item.second {
-    order: 3;           /* far right */
-  }
-  .podium-item.first  { border-color: var(--gold); }
-  .podium-item.second { border-color: var(--silver); }
-  .podium-item.third  { border-color: var(--bronze); }
   .podium-place {
     font-size: 36px; font-weight: 900;
     font-family: 'JetBrains Mono', monospace; margin-bottom: 4px;
   }
+  .podium-item.first { border-color: var(--gold); order: 2; top: -10px; }
+  .podium-item.second { border-color: var(--silver); order: 3; }
+  .podium-item.third { border-color: var(--bronze); order: 1; top: 10px; }
   .podium-item.first .podium-place { color: var(--gold); }
   .podium-item.second .podium-place { color: var(--silver); }
   .podium-item.third .podium-place { color: var(--bronze); }
@@ -367,6 +334,23 @@
   }
   footer a { color: var(--accent); text-decoration: none; }
 
+  /* ══ SCROLL ANIMATION (class-based, no inline styles) ══ */
+  .anim {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .anim.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  /* Hover lifts — these need .anim.visible to beat the visible state */
+  .card.anim.visible:hover { transform: translateY(-3px); }
+  .idea-card.anim.visible:hover { transform: translateY(-3px); }
+  .scoring-box.anim.visible:hover { transform: translateY(-3px); }
+  /* Podium hover uses margin-top instead of transform, since transform is used by .anim */
+  .podium-item.anim.visible:hover { transform: translateY(-4px); }
+
   /* ── RESPONSIVE ── */
   @media (max-width: 768px) {
     .nav-links { 
@@ -379,7 +363,7 @@
     .hero-meta { gap: 24px; }
     .scoring-grid { grid-template-columns: 1fr; }
     .podium { flex-direction: column; align-items: center; }
-    .podium-item { order: unset !important; }
+    .podium-item { order: unset !important; top: 0 !important; }
   }
 </style>
 </head>
@@ -441,24 +425,24 @@
       A student-led competition challenging Maimonides students to build functional AI agents — systems that perform complex, multi-step tasks and deliver tangible value. Not wrappers. Not chatbots. <em>Agents.</em>
     </div>
     <div class="card-grid">
-      <div class="card">
+      <div class="card anim">
         <div class="card-icon">🎯</div>
         <h3>Build Something Real</h3>
         <p>Your agent should solve an actual problem for actual people. We judge the live, working product — not slides, not videos, not promises.</p>
       </div>
-      <div class="card">
+      <div class="card anim">
         <div class="card-icon">🔒</div>
         <h3>Blind Judging</h3>
         <p>All submissions are anonymized by a faculty advisor before reaching the judges. Names are only revealed after scores are locked.</p>
       </div>
-      <div class="card">
+      <div class="card anim">
         <div class="card-icon">🧠</div>
         <h3>Architect, Don't Outsource</h3>
         <p>We evaluate your ability to design logic, engineer prompts, and build interfaces. Using AI as a tool for creation — not a shortcut — is the standard.</p>
       </div>
-      <div class="card">
+      <div class="card anim">
         <div class="card-icon">📦</div>
-        <h3>Submit & Lock</h3>
+        <h3>Submit &amp; Lock</h3>
         <p>Submit a copy of your agent by the deadline. That copy is what gets judged. You can keep developing your own version afterward.</p>
       </div>
     </div>
@@ -499,7 +483,7 @@
           <tr>
             <th style="width:48px;">Score</th>
             <th>Utility<span class="weight">×4 (max 16)</span></th>
-            <th>Creativity & Complexity<span class="weight">×3 (max 12)</span></th>
+            <th>Creativity &amp; Complexity<span class="weight">×3 (max 12)</span></th>
             <th>Functionality<span class="weight">×2 (max 8)</span></th>
             <th>User Experience<span class="weight">×1 (max 4)</span></th>
           </tr>
@@ -549,18 +533,18 @@
     </div>
 
     <div class="scoring-grid">
-      <div class="scoring-box">
+      <div class="scoring-box anim">
         <h4>📊 Score Formula</h4>
         <code>
           (Utility × 4)<br>
-          + (Creativity & Complexity × 3)<br>
+          + (Creativity &amp; Complexity × 3)<br>
           + (Functionality × 2)<br>
           + (User Experience × 1)<br>
           <br>
           <span style="color:var(--white); font-weight:700;">= Final Score (max 40)</span>
         </code>
       </div>
-      <div class="scoring-box">
+      <div class="scoring-box anim">
         <h4>⚖️ Tiebreaker Procedure</h4>
         <ol>
           <li>Higher <strong style="color:var(--white)">Functionality</strong> score wins</li>
@@ -582,24 +566,24 @@
       You can start building as soon as you see this. The window is intentionally long to give you time to build something great.
     </div>
     <div class="timeline">
-      <div class="tl-item active">
+      <div class="tl-item active anim">
         <div class="tl-date">March 2026</div>
         <div class="tl-title">Competition Opens</div>
         <div class="tl-desc">Official announcement. Start building your agent immediately.</div>
       </div>
-      <div class="tl-item">
+      <div class="tl-item anim">
         <div class="tl-date">March – May</div>
         <div class="tl-title">Development Window</div>
         <div class="tl-desc">~3 months to design, build, and refine your agent. Use the WhatsApp group for questions and updates.</div>
       </div>
-      <div class="tl-item">
+      <div class="tl-item anim">
         <div class="tl-date">Sunday, May 31 — 11:59 PM</div>
         <div class="tl-title">Submission Deadline</div>
         <div class="tl-desc">Submit a copy of your agent. This version is locked for judging. You may continue developing your own copy separately.</div>
       </div>
-      <div class="tl-item">
+      <div class="tl-item anim">
         <div class="tl-date">June 2026</div>
-        <div class="tl-title">Judging & Results</div>
+        <div class="tl-title">Judging &amp; Results</div>
         <div class="tl-desc">Blind, live judging of all submissions. Winners announced before end of academic year.</div>
       </div>
     </div>
@@ -614,19 +598,19 @@
 
     <!-- PRIZES -->
     <div class="podium">
-      <div class="podium-item third" style="transform: translateY(10px);">
-        <div class="podium-place">3rd</div>
-        <div class="podium-prize">$250*</div>
+      <div class="podium-item second anim">
+        <div class="podium-place">2nd</div>
+        <div class="podium-prize">$500*</div>
         <div class="podium-note">To be announced</div>
       </div>
-      <div class="podium-item first" style="transform: translateY(-10px);">
+      <div class="podium-item first anim">
         <div class="podium-place">1st</div>
         <div class="podium-prize">$750*</div>
         <div class="podium-note">To be announced</div>
       </div>
-      <div class="podium-item second">
-        <div class="podium-place">2nd</div>
-        <div class="podium-prize">$500*</div>
+      <div class="podium-item third anim">
+        <div class="podium-place">3rd</div>
+        <div class="podium-prize">$250*</div>
         <div class="podium-note">To be announced</div>
       </div>
     </div>
@@ -645,7 +629,7 @@
 <section id="ideas">
   <div class="container">
     <div class="section-label">Inspiration</div>
-    <div class="section-title">Ideas & Past Examples</div>
+    <div class="section-title">Ideas &amp; Past Examples</div>
     <div class="section-desc">
       Here are real entries from last year's competition, followed by some new directions to get you thinking. These are <em>examples</em>, not assignments — the best submissions will surprise us.
     </div>
@@ -654,103 +638,15 @@
     <h3 style="color:var(--white); font-size:18px; margin-bottom:16px; display:flex; align-items:center; gap:8px;">
       <span style="background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">⭐</span>
       Previous Competition Entries
-    </h3>734
-735
-736
-737
-738
-739
-740
-741
-742
-743
-744
-745
-746
-747
-748
-749
-750
-751
-752
-753
-754
-755
-756
-757
-758
-759
-760
-761
-762
-763
-764
-765
-766
-767
-768
-769
-770
-771
-<!DOCTYPE html>
-    <div class="sponsors-area">
-      <p>We are grateful for the continued investment in student innovation at Maimonides.</p>
-      <div class="sponsor-logos">
-        <!-- Replace with actual sponsor logos/names when confirmed -->
-        <span>Sponsor logos will appear here</span>
-      </div>
-      <p style="margin-top:20px; font-size:13px; color:#556;">
-        Interested in sponsoring? Contact the competition organizers.
-      </p>
-    </div>
-  </div>
-</section>
-
-<!-- ═══════ JOIN ═══════ -->
-<section id="join">
-  <div class="container" style="text-align:center;">
-    <div class="section-label">Get Started</div>
-    <div class="section-title">Ready to Compete?</div>nd
-$500
-    <div class="section-desc" style="margin-left:auto; margin-right:auto;">
-      Join the competition WhatsApp group for updates, the final rubric, Q&A, and submission instructions.
-    </div>
-    <div style="margin-top:20px;">
-      <!-- ▼▼▼ REPLACE WITH YOUR ACTUAL WHATSAPP GROUP LINK ▼▼▼ -->
-      <a href="https://chat.whatsapp.com/Dm7B59qSDPkIB9qAhnuumd" target="_blank" class="btn btn-primary" style="font-size:18px; padding:18px 40px;">
-        💬 Join the WhatsApp Group
-      </a>
-      <!-- ▲▲▲ REPLACE WITH YOUR ACTUAL WHATSAPP GROUP LINK ▲▲▲ -->
-    </div>
-    <p style="margin-top:20px; font-size:14px; color:var(--text);">
-      Questions? Reach out directly to <strong style="color:var(--white);">Mark</strong>, <strong style="color:var(--white);">Menshi</strong>, or <strong style="color:var(--white);">Yaniv</strong>.
-    </p>
-    <p style="margin-top:8px; font-size:14px;">
-      <strong style="color:var(--white);">Deadline: Sunday, May 31, 2026 at 11:59 PM</strong>
-    </p>
-  </div>
-</section>
-
-<!-- ═══════ FOOTER ═══════ -->
-<footer>
-  <p>Maimonides School — 2026 AI Agent Competition</p>
-  <p style="margin-top:6px;">Organized by Mark Druskin, Menshi Trachtenberg & Yaniv Kaufman-Grob · Class of 2026</p>
-  <p style="margin-top:6px;"><a href="#join">Join</a> · <a href="#rubric">Rubric</a> · <a href="#results">Results</a></p>
-</footer>
-
-<!-- ═══════ SCROLL ANIMATION ═══════ -->
-<script>
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      
+    </h3>
     <div class="ideas-grid" style="margin-bottom:40px;">
-      <div class="idea-card" style="border-color:var(--accent);">
+      <div class="idea-card anim" style="border-color:var(--accent);">
         <span class="idea-tag tag-edu">Education — 2025 Entry</span>
         <h4>EssayAssist</h4>
         <p>An agent that analyzes your essay against its specific rubric — highlighting areas to improve and giving targeted advice <em>without</em> rewriting it for you. Lets you actually learn by making the corrections yourself.</p>
         <a href="https://essayassist.netlify.app/" target="_blank" style="display:inline-block; margin-top:10px; font-size:12px; font-weight:600; color:var(--accent); text-decoration:none; border:1px solid var(--accent); padding:4px 12px; border-radius:6px;">View Live Demo →</a>
       </div>
-      <div class="idea-card" style="border-color:var(--accent);">
+      <div class="idea-card anim" style="border-color:var(--accent);">
         <span class="idea-tag tag-lang">Torah / Language — 2025 Entry</span>
         <h4>Parparaot — Gematria Dvar Torah</h4>
         <p>An agent that calculates the gematria of a word, finds connections to other words with the same numerical value, and then generates a dvar Torah weaving those connections together.</p>
@@ -761,32 +657,32 @@ $500
     <!-- NEW IDEAS -->
     <h3 style="color:var(--white); font-size:18px; margin-bottom:16px;">💡 More Directions to Explore</h3>
     <div class="ideas-grid">
-      <div class="idea-card">
+      <div class="idea-card anim">
         <span class="idea-tag tag-edu">Education</span>
         <h4>Adaptive Study Agent</h4>
         <p>An agent that ingests a student's notes or textbook chapters and generates personalized quizzes, adjusting difficulty based on performance.</p>
       </div>
-      <div class="idea-card">
+      <div class="idea-card anim">
         <span class="idea-tag tag-lang">Language</span>
         <h4>Hebrew STEM Translator</h4>
         <p>A tool that bridges English and Hebrew STEM materials — translating terminology, formatting equations, and preserving technical accuracy.</p>
       </div>
-      <div class="idea-card">
+      <div class="idea-card anim">
         <span class="idea-tag tag-open">Open Innovation</span>
         <h4>Schedule Optimizer</h4>
         <p>An agent that takes a student's classes, homework load, and extracurriculars and generates optimized daily/weekly schedules.</p>
       </div>
-      <div class="idea-card">
+      <div class="idea-card anim">
         <span class="idea-tag tag-tool">Utility</span>
         <h4>Multi-Source Research Agent</h4>
         <p>An agent that takes a research question, searches multiple sources, cross-references information, and produces a cited summary.</p>
       </div>
-      <div class="idea-card">
+      <div class="idea-card anim">
         <span class="idea-tag tag-edu">Education</span>
         <h4>Gemara Study Partner</h4>
         <p>An AI chavrusa that can discuss a sugya, present different rishonim's positions, and quiz on key concepts and vocabulary.</p>
       </div>
-      <div class="idea-card">
+      <div class="idea-card anim">
         <span class="idea-tag tag-open">Open Innovation</span>
         <h4>Your Idea Here</h4>
         <p>The most impressive submissions are often ones nobody expected. Find a problem that matters to you and build something that solves it.</p>
@@ -799,7 +695,7 @@ $500
 <section id="sponsors" style="background: var(--deep);">
   <div class="container">
     <div class="section-label">Support</div>
-    <div class="section-title">Sponsors & Thanks</div>
+    <div class="section-title">Sponsors &amp; Thanks</div>
     <div class="section-desc">
       This competition is made possible by the generous support of Maimonides School's donors and the guidance of our faculty.
     </div>
@@ -820,17 +716,14 @@ $500
 <section id="join">
   <div class="container" style="text-align:center;">
     <div class="section-label">Get Started</div>
-    <div class="section-title">Ready to Compete?</div>nd
-$500
+    <div class="section-title">Ready to Compete?</div>
     <div class="section-desc" style="margin-left:auto; margin-right:auto;">
-      Join the competition WhatsApp group for updates, the final rubric, Q&A, and submission instructions.
+      Join the competition WhatsApp group for updates, the final rubric, Q&amp;A, and submission instructions.
     </div>
     <div style="margin-top:20px;">
-      <!-- ▼▼▼ REPLACE WITH YOUR ACTUAL WHATSAPP GROUP LINK ▼▼▼ -->
       <a href="https://chat.whatsapp.com/Dm7B59qSDPkIB9qAhnuumd" target="_blank" class="btn btn-primary" style="font-size:18px; padding:18px 40px;">
         💬 Join the WhatsApp Group
       </a>
-      <!-- ▲▲▲ REPLACE WITH YOUR ACTUAL WHATSAPP GROUP LINK ▲▲▲ -->
     </div>
     <p style="margin-top:20px; font-size:14px; color:var(--text);">
       Questions? Reach out directly to <strong style="color:var(--white);">Mark</strong>, <strong style="color:var(--white);">Menshi</strong>, or <strong style="color:var(--white);">Yaniv</strong>.
@@ -844,26 +737,24 @@ $500
 <!-- ═══════ FOOTER ═══════ -->
 <footer>
   <p>Maimonides School — 2026 AI Agent Competition</p>
-  <p style="margin-top:6px;">Organized by Mark Druskin, Menshi Trachtenberg & Yaniv Kaufman-Grob · Class of 2026</p>
+  <p style="margin-top:6px;">Organized by Mark Druskin, Menshi Trachtenberg &amp; Yaniv Kaufman-Grob · Class of 2026</p>
   <p style="margin-top:6px;"><a href="#join">Join</a> · <a href="#rubric">Rubric</a> · <a href="#results">Results</a></p>
 </footer>
 
 <!-- ═══════ SCROLL ANIMATION ═══════ -->
 <script>
+  // Class-based scroll animation — no inline styles
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => {
       if (e.isIntersecting) {
-        e.target.classList.add('in-view');
+        e.target.classList.add('visible');
       } else {
-        e.target.classList.remove('in-view');
+        e.target.classList.remove('visible');
       }
     });
   }, { threshold: 0.1 });
 
-  document.querySelectorAll('.card, .idea-card, .podium-item, .tl-item, .scoring-box').forEach(el => {
-    el.classList.add('scroll-animate');
-    observer.observe(el);
-  });
+  document.querySelectorAll('.anim').forEach(el => observer.observe(el));
 
   // Close mobile nav on link click
   document.querySelectorAll('.nav-links a').forEach(a => {
