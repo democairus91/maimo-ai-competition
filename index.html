@@ -36,8 +36,26 @@
     line-height: 1.6;
     overflow-x: hidden;
   }
-  .revealed {
+  /* ── SCROLL ANIMATION (class-based) ── */
+  .scroll-animate {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .scroll-animate.in-view {
     opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* ── HOVER OVERRIDES (beat .in-view specificity via :hover) ── */
+  .card.in-view:hover {
+    transform: translateY(-3px);
+  }
+  .idea-card.in-view:hover {
+    transform: translateY(-3px);
+  }
+  .podium-item.in-view:hover {
+    transform: translateY(-4px);
   }
   /* ── NAV ── */
   nav {
@@ -254,9 +272,22 @@
     text-align: center; min-width: 180px; transition: 0.25s;
   }
   .podium-item:hover { transform: translateY(-4px); }
-  .podium-item.first { border-color: var(--gold); order: 2; }
-  .podium-item.second { border-color: var(--silver); order: 1; }
-  .podium-item.third { border-color: var(--bronze); order: 3; }
+  .podium-item.third {
+    order: 1;           /* far left */
+    position: relative;
+    top: 10px;          /* 10px below */
+  }
+  .podium-item.first {
+    order: 2;           /* middle */
+    position: relative;
+    top: -10px;         /* 10px above */
+  }
+  .podium-item.second {
+    order: 3;           /* far right */
+  }
+  .podium-item.first  { border-color: var(--gold); }
+  .podium-item.second { border-color: var(--silver); }
+  .podium-item.third  { border-color: var(--bronze); }
   .podium-place {
     font-size: 36px; font-weight: 900;
     font-family: 'JetBrains Mono', monospace; margin-bottom: 4px;
@@ -623,7 +654,95 @@
     <h3 style="color:var(--white); font-size:18px; margin-bottom:16px; display:flex; align-items:center; gap:8px;">
       <span style="background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">⭐</span>
       Previous Competition Entries
-    </h3>
+    </h3>734
+735
+736
+737
+738
+739
+740
+741
+742
+743
+744
+745
+746
+747
+748
+749
+750
+751
+752
+753
+754
+755
+756
+757
+758
+759
+760
+761
+762
+763
+764
+765
+766
+767
+768
+769
+770
+771
+<!DOCTYPE html>
+    <div class="sponsors-area">
+      <p>We are grateful for the continued investment in student innovation at Maimonides.</p>
+      <div class="sponsor-logos">
+        <!-- Replace with actual sponsor logos/names when confirmed -->
+        <span>Sponsor logos will appear here</span>
+      </div>
+      <p style="margin-top:20px; font-size:13px; color:#556;">
+        Interested in sponsoring? Contact the competition organizers.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════ JOIN ═══════ -->
+<section id="join">
+  <div class="container" style="text-align:center;">
+    <div class="section-label">Get Started</div>
+    <div class="section-title">Ready to Compete?</div>nd
+$500
+    <div class="section-desc" style="margin-left:auto; margin-right:auto;">
+      Join the competition WhatsApp group for updates, the final rubric, Q&A, and submission instructions.
+    </div>
+    <div style="margin-top:20px;">
+      <!-- ▼▼▼ REPLACE WITH YOUR ACTUAL WHATSAPP GROUP LINK ▼▼▼ -->
+      <a href="https://chat.whatsapp.com/Dm7B59qSDPkIB9qAhnuumd" target="_blank" class="btn btn-primary" style="font-size:18px; padding:18px 40px;">
+        💬 Join the WhatsApp Group
+      </a>
+      <!-- ▲▲▲ REPLACE WITH YOUR ACTUAL WHATSAPP GROUP LINK ▲▲▲ -->
+    </div>
+    <p style="margin-top:20px; font-size:14px; color:var(--text);">
+      Questions? Reach out directly to <strong style="color:var(--white);">Mark</strong>, <strong style="color:var(--white);">Menshi</strong>, or <strong style="color:var(--white);">Yaniv</strong>.
+    </p>
+    <p style="margin-top:8px; font-size:14px;">
+      <strong style="color:var(--white);">Deadline: Sunday, May 31, 2026 at 11:59 PM</strong>
+    </p>
+  </div>
+</section>
+
+<!-- ═══════ FOOTER ═══════ -->
+<footer>
+  <p>Maimonides School — 2026 AI Agent Competition</p>
+  <p style="margin-top:6px;">Organized by Mark Druskin, Menshi Trachtenberg & Yaniv Kaufman-Grob · Class of 2026</p>
+  <p style="margin-top:6px;"><a href="#join">Join</a> · <a href="#rubric">Rubric</a> · <a href="#results">Results</a></p>
+</footer>
+
+<!-- ═══════ SCROLL ANIMATION ═══════ -->
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      
     <div class="ideas-grid" style="margin-bottom:40px;">
       <div class="idea-card" style="border-color:var(--accent);">
         <span class="idea-tag tag-edu">Education — 2025 Entry</span>
@@ -734,27 +853,15 @@ $500
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => {
       if (e.isIntersecting) {
-        e.target.style.opacity = '1';
-        e.target.style.transform = 'translateY(0)';
-
-        // After the animation completes, remove inline styles
-        // so CSS :hover and class-based transforms work again
-        setTimeout(() => {
-          e.target.style.removeProperty('transform');
-          e.target.style.removeProperty('transition');
-          e.target.style.removeProperty('opacity');
-          e.target.classList.add('revealed');
-        }, 550); // slightly longer than the 0.5s transition
-
-        observer.unobserve(e.target);
+        e.target.classList.add('in-view');
+      } else {
+        e.target.classList.remove('in-view');
       }
     });
   }, { threshold: 0.1 });
 
   document.querySelectorAll('.card, .idea-card, .podium-item, .tl-item, .scoring-box').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(20px)';
-    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    el.classList.add('scroll-animate');
     observer.observe(el);
   });
 
