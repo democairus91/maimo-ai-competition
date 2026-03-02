@@ -36,7 +36,9 @@
     line-height: 1.6;
     overflow-x: hidden;
   }
-
+  .revealed {
+    opacity: 1;
+  }
   /* ── NAV ── */
   nav {
     position: fixed; top: 0; left: 0; right: 0;
@@ -699,7 +701,8 @@
 <section id="join">
   <div class="container" style="text-align:center;">
     <div class="section-label">Get Started</div>
-    <div class="section-title">Ready to Compete?</div>
+    <div class="section-title">Ready to Compete?</div>nd
+$500
     <div class="section-desc" style="margin-left:auto; margin-right:auto;">
       Join the competition WhatsApp group for updates, the final rubric, Q&A, and submission instructions.
     </div>
@@ -728,12 +731,22 @@
 
 <!-- ═══════ SCROLL ANIMATION ═══════ -->
 <script>
-  // Simple fade-in on scroll
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => {
       if (e.isIntersecting) {
         e.target.style.opacity = '1';
         e.target.style.transform = 'translateY(0)';
+
+        // After the animation completes, remove inline styles
+        // so CSS :hover and class-based transforms work again
+        setTimeout(() => {
+          e.target.style.removeProperty('transform');
+          e.target.style.removeProperty('transition');
+          e.target.style.removeProperty('opacity');
+          e.target.classList.add('revealed');
+        }, 550); // slightly longer than the 0.5s transition
+
+        observer.unobserve(e.target);
       }
     });
   }, { threshold: 0.1 });
